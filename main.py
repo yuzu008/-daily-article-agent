@@ -57,7 +57,7 @@ def scrape_qiita():
                     title = title_tag.text.strip()
                     link = f"https://qiita.com{title_tag['href']}"
                     if match_keywords(title):
-                        content = fetch_article_content(link, "div.ArticleBody")
+                        content = fetch_article_content(link, "div[class*='articleBody']")
                         summary = summarize_text(content)
                         articles.append(("Qiita", keyword, title, link, summary))
         except Exception as e:
