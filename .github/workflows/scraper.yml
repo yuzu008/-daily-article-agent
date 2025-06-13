@@ -1,38 +1,13 @@
-name: Daily Article Scraper
-
-on:
-  schedule:
-    - cron: '0 22 * * *'  # 7:00 AM JST（UTC+9 → UTC 22:00）
-  workflow_dispatch:
-
-jobs:
-  run-scraper:
-    runs-on: ubuntu-latest
-
-    permissions:
-      contents: write  # リポジトリへの書き込みを許可
-
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@v3
-
-      - name: Set up Python
-        uses: actions/setup-python@v4
-        with:
-          python-version: '3.10'
-
-      - name: Install dependencies
-        run: pip install requests beautifulsoup4
-
-      - name: Run scraper
-        run: python main.py
-
       - name: Commit output files
         run: |
           git config user.name "github-actions"
           git config user.email "github-actions@github.com"
-          git add output/
-          git commit -m "Add daily scraped articles"
+          git fetch
+          git pull --rebase
+          git add output/*
+          git status
+          git diff --cached
+          git commit -m "Add daily scraped articles" || echo "No changes to commit"
           git push
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
